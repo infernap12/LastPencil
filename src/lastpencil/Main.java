@@ -1,5 +1,6 @@
 package lastpencil;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -10,23 +11,22 @@ public class Main {
     private static int pencils;
 
 
-
     private static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
         pencils = promptStartPencils("How many pencils would you like to use:");
-        first = whosOnFirst("Who will be the first (%s, %s):".formatted(NAME1,NAME2));
+        first = whosOnFirst("Who will be the first (%s, %s):".formatted(NAME1, NAME2));
         String player = first;
         while (pencils > 0) {
             drawPencils();
             System.out.printf("%s's turn!", player);
             System.out.println();
-            pencils -= playPencils();
-            player = player.equals(NAME1) ? NAME2 : NAME1; //swap players
+            pencils -= player.equals(NAME1) ? getUserMove() : Bot.getBotMove();
+            player = player.equals(NAME1) ? NAME2 : NAME1; //swap players, useful on last line, as after someone takes the last, it swaps to print the victors name
         }
         System.out.println(player + " won!");
     }
 
-    private static int playPencils() {
+    private static int getUserMove() {
         while (true) {
             try {
                 int move = Integer.parseInt(scanner.nextLine());
@@ -61,6 +61,7 @@ public class Main {
             }
         }
     }
+
     private static int promptStartPencils(String prompt) {
         System.out.println(prompt);
         while (true) {
@@ -80,5 +81,42 @@ public class Main {
                 System.out.println("The number of pencils should be numeric");
             }
         }
+    }
+    static class Bot {
+        private static Random random = new Random();
+
+        /**
+         * <p>Determines the next move of the bot.</p>
+         * <p>The strategy is based on the current number of pencils left.</p>
+         * <p></p>
+         * <p>The method calculates the game state by adding 3 to the number of pencils and
+         * then taking the modulo 4 of this sum. This calculation adjusts the strategy
+         * to ensure the bot ends up in a winning position when possible.</p>
+         * <p></p>
+         * <p>If the calculated state is 0, indicating a non-winning position, the bot
+         * randomly chooses to take 1 to 3 pencils, unless there is only one pencil left,
+         * in which case it takes the last pencil.</p>
+         * <p></p>
+         * <p>If the state is any other number (1, 2, or 3), the bot takes that number of pencils,
+         * aiming to leave a multiple of 4 pencils for the opponent, thereby forcing the opponent
+         * into a non-winning position.</p>
+         * <p></p>
+         * <p>After calculating the move, it is printed to the console, and then returned.</p>
+         *
+         * @return an integer representing the bot's move, ranging from 1 to 3.
+         */
+        public static int getBotMove() {
+            int move;
+            int state = (pencils + 3) % 4;
+            if (state == 0) {
+                move = pencils == 1 ? 1 : random.nextInt(2) + 1;
+            } else {
+                move = state;
+            }
+            System.out.println(move);
+            return move;
+        }
+
+
     }
 }
