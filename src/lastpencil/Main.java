@@ -7,15 +7,13 @@ public class Main {
 
     private static final String NAME1 = "Liam";
     private static final String NAME2 = "Emma";
-    private static String first;
     private static int pencils;
 
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
-        pencils = promptStartPencils("How many pencils would you like to use:");
-        first = whosOnFirst("Who will be the first (%s, %s):".formatted(NAME1, NAME2));
-        String player = first;
+        pencils = promptStartPencils();
+        String player = whosOnFirst("Who will be the first (%s, %s):".formatted(NAME1, NAME2));
         while (pencils > 0) {
             drawPencils();
             System.out.printf("%s's turn!", player);
@@ -62,8 +60,8 @@ public class Main {
         }
     }
 
-    private static int promptStartPencils(String prompt) {
-        System.out.println(prompt);
+    private static int promptStartPencils() {
+        System.out.println("How many pencils would you like to use:");
         while (true) {
             String input = scanner.nextLine();
             try {
@@ -83,7 +81,7 @@ public class Main {
         }
     }
     static class Bot {
-        private static Random random = new Random();
+        private static final Random random = new Random();
 
         /**
          * <p>Determines the next move of the bot.</p>
